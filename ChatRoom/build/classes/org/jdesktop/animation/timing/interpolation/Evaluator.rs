@@ -1,0 +1,17 @@
+org.jdesktop.animation.timing.interpolation.EvaluatorColor
+org.jdesktop.animation.timing.interpolation.Evaluator
+org.jdesktop.animation.timing.interpolation.EvaluatorEllipse2D
+org.jdesktop.animation.timing.interpolation.EvaluatorLine2D
+org.jdesktop.animation.timing.interpolation.EvaluatorLong
+org.jdesktop.animation.timing.interpolation.EvaluatorRectangle2D
+org.jdesktop.animation.timing.interpolation.EvaluatorCubicCurve2D
+org.jdesktop.animation.timing.interpolation.EvaluatorPoint2D
+org.jdesktop.animation.timing.interpolation.EvaluatorDimension2D
+org.jdesktop.animation.timing.interpolation.EvaluatorArc2D
+org.jdesktop.animation.timing.interpolation.EvaluatorFloat
+org.jdesktop.animation.timing.interpolation.EvaluatorQuadCurve2D
+org.jdesktop.animation.timing.interpolation.EvaluatorDouble
+org.jdesktop.animation.timing.interpolation.EvaluatorRoundRectangle2D
+org.jdesktop.animation.timing.interpolation.EvaluatorByte
+org.jdesktop.animation.timing.interpolation.EvaluatorShort
+org.jdesktop.animation.timing.interpolation.EvaluatorInteger
