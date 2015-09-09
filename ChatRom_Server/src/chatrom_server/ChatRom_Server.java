@@ -30,13 +30,10 @@ public class ChatRom_Server {
         @Override
         public void run() {
             while (true) {
-                //BufferedReader br;
                 DataInputStream br;
                 try {
-                    byte[] dt = new byte[1024];
                     try {
                         br = new DataInputStream(sk.getInputStream());
-                        int count = br.read(dt);
                     } catch (SocketException ex) {
                         System.out.println("NGAT DOT NGOT");
                         users.remove(User);
@@ -50,8 +47,7 @@ public class ChatRom_Server {
                         sk.close();
                         return;
                     }
-                    //System.out.println("count: "+count);
-                    String request = new String(dt, "UTF-8");
+                    String request = br.readUTF();
                     request = request.substring(0, request.indexOf("\r\n"));
                     System.out.println(request);
                     String[] data = request.split("!@#.");
@@ -61,7 +57,7 @@ public class ChatRom_Server {
                         if (!data[0].equals("qt")) {
                             for (int i = 0; i < listSock.size(); i++) {
                                 DataOutputStream ps = new DataOutputStream(listSock.get(i).getOutputStream());
-                                ps.write(("offline: " + data[0] + "\r\n").getBytes("UTF8"));
+                                ps.writeUTF("offline: " + data[0] + "\r\n");
 
                             }
                         }
@@ -80,7 +76,7 @@ public class ChatRom_Server {
                             User = data[1];
                             flag = true;
                         }
-                        if(!users.contains(data[1])){
+                        if (!users.contains(data[1])) {
                             users.add(data[1]);
                         }
                     }
@@ -90,21 +86,33 @@ public class ChatRom_Server {
                             ds += users.get(i) + "!@#.";
                         }
                         DataOutputStream ps = new DataOutputStream(sk.getOutputStream());
-                        ps.write(("Danh sach:" + ds + "\r\n").getBytes("UTF8"));
+                        ps.writeUTF("Danh sach:" + ds + "\r\n");
                         continue;
                     }
                     for (int i = 0; i < listSock.size(); i++) {
                         DataOutputStream ps = new DataOutputStream(listSock.get(i).getOutputStream());
                         if (listSock.get(i) != sk) {
-                            //ps.println(data[0]+": "+data[1]);
-                            ps.write((data[0] + ": " + data[1] + "\r\n").getBytes("UTF8"));
+                            ps.writeUTF((data[0] + ": " + data[1] + "\r\n"));
                         } else {
-                            //ps.println("BẠN: " + data[1]);
-                            ps.write(("BẠN: " + data[1] + "\r\n").getBytes("UTF8"));
+                            ps.writeUTF(("BẠN: " + data[1] + "\r\n"));
                         }
                     }
                 } catch (IOException ex) {
                     System.out.println("ngat dot ngot");
+                    try {
+                        users.remove(User);
+                        for (int i = 0; i < listSock.size(); i++) {
+                            if (listSock.get(i) == sk) {
+                                listSock.get(i).close();
+                                listSock.remove(i);
+                                SoLuong--;
+                            }
+                        }
+                        sk.close();
+                        return;
+                    } catch (IOException ex1) {
+                        //Logger.getLogger(ChatRom_Server.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
                     //Logger.getLogger(ChatRom_Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
 

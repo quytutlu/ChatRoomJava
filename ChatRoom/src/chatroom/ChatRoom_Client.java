@@ -11,7 +11,6 @@ public class ChatRoom_Client {
         try {
             //Socket socket = new Socket("localhost", 2015);
             Socket socket = new Socket("52.68.172.187", 2015);
-            //new FormChatRoom(socket);
             new login(socket);
         } catch (IOException ex) {
             Logger.getLogger(ChatRoom_Client.class.getName()).log(Level.SEVERE, null, ex);

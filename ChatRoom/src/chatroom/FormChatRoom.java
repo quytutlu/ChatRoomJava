@@ -12,7 +12,6 @@ import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +33,6 @@ import net.sf.jtelegraph.TelegraphType;
  */
 public class FormChatRoom extends JFrame {
 
-    //private final JButton logout;
     private JButton Gui;
     private JTextArea ta;
     private JTextArea tf;
@@ -44,7 +42,7 @@ public class FormChatRoom extends JFrame {
         DataOutputStream pst;
         try {
             pst = new DataOutputStream(socket.getOutputStream());
-            pst.write(("online!@#." + TenDangNhap + "\r\n").getBytes("UTF8"));
+            pst.writeUTF(("online!@#." + TenDangNhap + "\r\n"));
         } catch (IOException ex) {
             Logger.getLogger(FormChatRoom.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -95,16 +93,10 @@ public class FormChatRoom extends JFrame {
             @Override
             public void run() {
                 while (true) {
-                    //BufferedReader br;
                     DataInputStream br;
                     try {
-                        //br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
                         br = new DataInputStream(socket.getInputStream());
-                        //String str = br.readLine();
-                        byte[] data = new byte[1024];
-                        int count = br.read(data);
-                        String str = null;
-                        str = new String(data, "UTF-8");
+                        String str = br.readUTF();
                         str = str.substring(0, str.indexOf("\r\n"));
                         System.out.println(str);
                         String[] stm = str.split(":");
@@ -117,7 +109,6 @@ public class FormChatRoom extends JFrame {
                                 for (int i = 0; i < sl; i++) {
                                     ListOnline += (i + 1) + ": " + UserOnline[i] + "<br>";
                                 }
-                                //ta.setText(ta.getText() + online + "\n");
                                 new HienThiThongBao(onlineTile, ListOnline, TelegraphType.STAR_FULL, WindowPosition.TOPRIGHT, 10000).start();
                             } catch (ArrayIndexOutOfBoundsException ex) {
                                 new HienThiThongBao("Số lượng online(1)", "1: "+TenDangNhap, TelegraphType.STAR_FULL, WindowPosition.TOPRIGHT, 10000).start();
@@ -128,7 +119,6 @@ public class FormChatRoom extends JFrame {
                         if (!stm[0].equals("BẠN")) {
                             if (stm[0].equals("online")) {
                                 new HienThiThongBao("ONLINE", stm[1] + " vừa online", TelegraphType.USER, WindowPosition.BOTTOMRIGHT, 5000).start();
-                                //new HienThiThongBao("ONLINE")
                             } else if (stm[0].equals("offline")) {
                                 new HienThiThongBao("OFFLINE", stm[1] + " vừa offline", TelegraphType.USER_DELETE, WindowPosition.BOTTOMRIGHT, 5000).start();
                             } else {
@@ -159,7 +149,7 @@ public class FormChatRoom extends JFrame {
                         DataOutputStream ps;
                         try {
                             ps = new DataOutputStream(socket.getOutputStream());
-                            ps.write((TenDangNhap + "!@#.laydsonline\r\n").getBytes("UTF8"));
+                            ps.writeUTF(TenDangNhap + "!@#.laydsonline\r\n");
                             tf.setText("");
                             e.consume();
                         } catch (IOException ex) {
@@ -171,7 +161,7 @@ public class FormChatRoom extends JFrame {
                         DataOutputStream ps;
                         try {
                             ps = new DataOutputStream(socket.getOutputStream());
-                            ps.write((TenDangNhap + "!@#." + tf.getText() + "\r\n").getBytes("UTF8"));
+                            ps.writeUTF(TenDangNhap + "!@#." + tf.getText() + "\r\n");
                             tf.setText("");
                             e.consume();
                         } catch (IOException ex) {
@@ -179,13 +169,11 @@ public class FormChatRoom extends JFrame {
                         }
                     } else {
                         e.consume();
-                        //JOptionPane.showMessageDialog(null, "trong");
                     }
                 }
             }
 
         });
-        //tf.setUI(new te);
         tf.setBackground(Color.WHITE);
         tf.setWrapStyleWord(true);
         tf.setLineWrap(true);
@@ -200,7 +188,7 @@ public class FormChatRoom extends JFrame {
                     DataOutputStream ps;
                     try {
                         ps = new DataOutputStream(socket.getOutputStream());
-                        ps.write((TenDangNhap + "!@#.laydsonline\r\n").getBytes("UTF8"));
+                        ps.writeUTF(TenDangNhap + "!@#.laydsonline\r\n");
                         tf.setText("");
                     } catch (IOException ex) {
                         Logger.getLogger(FormChatRoom.class.getName()).log(Level.SEVERE, null, ex);
@@ -211,7 +199,8 @@ public class FormChatRoom extends JFrame {
                     DataOutputStream ps;
                     try {
                         ps = new DataOutputStream(socket.getOutputStream());
-                        ps.write((TenDangNhap + "!@#." + tf.getText() + "\r\n").getBytes("UTF8"));
+                        //ps.write((TenDangNhap + "!@#." + tf.getText() + "\r\n").getBytes("UTF8"));
+                        ps.writeUTF(TenDangNhap + "!@#." + tf.getText() + "\r\n");
                         tf.setText("");
                     } catch (IOException ex) {
                         Logger.getLogger(FormChatRoom.class.getName()).log(Level.SEVERE, null, ex);
@@ -221,8 +210,6 @@ public class FormChatRoom extends JFrame {
         });
         Gui.setVisible(false);
         KhungChat.add(new JScrollPane(tf));
-        //NutGui.add(Gui);
-        //KhungChat.add(NutGui);
 
         // The CenterPanel which is the chat room
         ta = new JTextArea("Welcome " + TenDangNhap + " to the Chat room\n", 80, 80);
@@ -248,10 +235,10 @@ public class FormChatRoom extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                PrintStream ps;
+                DataOutputStream ps;
                 try {
-                    ps = new PrintStream(socket.getOutputStream());
-                    ps.println(TenDangNhap + "!@#.exit\r\n");
+                    ps=new DataOutputStream(socket.getOutputStream());
+                    ps.writeUTF(TenDangNhap + "!@#.exit\r\n");
                     socket.close();
                     ln.stop();
                 } catch (IOException ex) {
