@@ -109,15 +109,20 @@ public class FormChatRoom extends JFrame {
                         System.out.println(str);
                         String[] stm = str.split(":");
                         if (stm[0].equals("Danh sach")) {
-                            String[] UserOnline = stm[1].split("!@#.");
-                            int sl = UserOnline.length;
-                            String onlineTile = "Số lượng online(" + sl + ")";
-                            String ListOnline = "";
-                            for (int i = 0; i < sl; i++) {
-                                ListOnline += (i + 1) + ": " + UserOnline[i] + "<br>";
+                            try {
+                                String[] UserOnline = stm[1].split("!@#.");
+                                int sl = UserOnline.length;
+                                String onlineTile = "Số lượng online(" + sl + ")";
+                                String ListOnline = "";
+                                for (int i = 0; i < sl; i++) {
+                                    ListOnline += (i + 1) + ": " + UserOnline[i] + "<br>";
+                                }
+                                //ta.setText(ta.getText() + online + "\n");
+                                new HienThiThongBao(onlineTile, ListOnline, TelegraphType.STAR_FULL, WindowPosition.TOPRIGHT, 10000).start();
+                            } catch (ArrayIndexOutOfBoundsException ex) {
+                                new HienThiThongBao("Số lượng online(1)", "1: "+TenDangNhap, TelegraphType.STAR_FULL, WindowPosition.TOPRIGHT, 10000).start();
+                                System.out.println("Lỗi chỉ số");
                             }
-                            //ta.setText(ta.getText() + online + "\n");
-                            new HienThiThongBao(onlineTile, ListOnline, TelegraphType.STAR_FULL, WindowPosition.TOPRIGHT, 10000).start();
                             continue;
                         }
                         if (!stm[0].equals("BẠN")) {
